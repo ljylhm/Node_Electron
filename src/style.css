@@ -1,0 +1,72 @@
+body{
+    margin: 0px;
+	padding: 0px;
+	/* background-color: #EAEDF1; */
+	background-color: #f1f1f1;
+	overflow-y: scroll;
+}
+i {
+    display: inline-block;
+    font-style:normal;
+}
+p,h1,h2,h3,h4 {
+	margin:0px;
+	padding:0px;
+}
+
+/* 上下左右居中 */
+.l-center,.l-y-center,.l-x-center{
+	position: absolute;
+}
+.l-center{
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	-webkit-transform: translate(-50%,-50%);
+}
+.l-y-center{
+	top: 50%;
+	transform: translate(0%,-50%);
+	-webkit-transform:translate(0%,-50%);
+}
+.l-x-center{
+	left: 50%;
+	transform: translate(-50%,0%);
+	-webkit-transform:translate(-50%,0%);
+}
+
+/* 全局滚动条样式设置 */
+::-webkit-scrollbar-track-piece { /*滚动条凹槽的颜色，还可以设置边框属性*/
+	background-color:#f8f8f8;
+}
+::-webkit-scrollbar {/*滚动条的宽度*/
+	width:4px;
+	height:9px;
+}
+::-webkit-scrollbar-thumb {/*滚动条的设置*/
+	background-color:#dddddd;
+	background-clip:padding-box;
+	border-radius: 15px;
+	min-height:28px;
+}
+::-webkit-scrollbar-thumb:hover {
+	background-color:#bbb;
+}
+
+/** input框的大小*/
+.input-small{
+	width: 200px;
+}
+.input-middle{
+	width: 250px;
+}
+.input-large{
+	width: 300px;
+}
+
+/** 路由区域的样式*/
+.router-view-o{
+	width: 100%;
+	box-sizing: border-box;
+	padding-top: 40px;
+}
