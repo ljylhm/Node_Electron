@@ -31,7 +31,7 @@ let webConfig = {
       {
         test: /\.js$/,
         use: 'babel-loader',
-        include: [ path.resolve(__dirname, '../src/renderer') ],
+        include: [path.resolve(__dirname, '../src/renderer')],
         exclude: /node_modules/
       },
       {
@@ -113,6 +113,10 @@ if (process.env.NODE_ENV === 'production') {
       {
         from: path.join(__dirname, '../static'),
         to: path.join(__dirname, '../dist/web/static'),
+        ignore: ['.*']
+      }, {
+        from: path.join(__dirname, '../history'),
+        to: path.join(__dirname, '../dist/web/history'),
         ignore: ['.*']
       }
     ]),

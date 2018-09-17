@@ -18,13 +18,26 @@
         <div class="show-list-o comm-block-o">
             <div class="list-operate">
                 <div class="btn-o">
-                    <el-button plain>上传文件</el-button>
-                    <el-button plain>全选</el-button>
+                    <el-button plain @click="dialogVisible_upToken=true">上传文件</el-button>
+                    <el-button plain @click="chooseAll">全选</el-button>
                     <el-button plain @click="reloadList">刷新列表</el-button>
                 </div>
+                <div class="file-show-o">
+                    <i class="el-icon-document"></i>
+                    <span>共 {{searchFileListData.length　|| 'xxx'}} 个文件</span>
+                    <i class="el-icon-tickets"></i>
+                    <span>共 {{currentCount ||　'xxx'}} 存储量</span>
+                </div>
+                <!-- 输入的查询框 -->
+                <div class="input-o">
+                    <el-input placeholder="输入文件前缀搜索" :debounce=0 class="input-small" prefix-icon="el-icon-search" v-model="searchWhat" @change="searchChange" clearable>
+                    </el-input>
+                </div>
             </div>
-            <el-table :data="fileListData" tooltip-effect="dark" style="width: 100%" max-height="600" class="show-result-table">
-                <el-table-column prop="key" label="文件名" min-width="300" align="center"></el-table-column>
+            <el-table :data="searchFileListData" tooltip-effect="dark" @selection-change="handleSelectionChange" ref="resourceData" style="width: 100%" max-height="600" class="show-result-table" :key="'s'">
+                <el-table-column type="selection" width="55">
+                </el-table-column>
+                <el-table-column prop="key" label="文件名" min-width="260" align="center"></el-table-column>
                 <el-table-column prop="mimeType" label="文件类型" min-width="200" align="center"></el-table-column>
                 <el-table-column label="存储类型" min-width="200" align="center">
                     <template scope="props">
@@ -66,13 +79,32 @@
                                 <img src="@static/preview.png" alt="">
                             </i>
                         </el-popover>
-                        <i class="more-i">
-                            <img src="@static/more.png" alt="">
+                        <i class="more-i" @click="deleteImg(props.row.key)">
+                            <img src="@static/delete.png" alt="">
                         </i>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
+
+        <el-dialog title="上传配置" class="dialog-comm" :visible.sync="dialogVisible_upToken" :close-on-click-modal="false">
+            <div class="uptoken-o">
+                <div class="uptoken-o_1">
+
+                </div>
+                <div class="uptoken-o_2">
+
+                </div>
+            </div>
+            <!-- <el-form ref="form" :inline="true" :rules="rule_qiniu" :model="form" status-icon label-width="80px">
+                <div class="uptoken-o"></div>
+
+                <br/>
+            </el-form> -->
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="chooseFile">选择文件</el-button>
+            </span>
+        </el-dialog>
 
         <el-dialog title="七牛云配置" class="dialog-comm" :visible.sync="dialogVisible_CommOpt" :close-on-click-modal="false">
             <el-form ref="form" :inline="true" :rules="rule_qiniu" :model="form" status-icon label-width="80px">
@@ -106,6 +138,11 @@
     import Qhelper from "../../lib/qiniu";
     import { helper } from "@helper";
     import { showInfo } from "@showInfo";
+    let searchVal = (val) => { // 搜索关键词的函数
+        _this.searchFileListData.filter((item, index, arr) => {
+            return item["key"].indexOf(val) >= 0;
+        })
+    }
     let transformDate = (data, days = 0) => {
         return new Date((new Date(data).getTime() - helper.oneDayTime * days)).format("yyyy-MM-dd")
     }
@@ -125,6 +162,7 @@
             }
             return {
                 dialogVisible_CommOpt: false,
+                dialogVisible_upToken: false,
                 form: {
                     ak: "",
                     sk: "",
@@ -135,6 +173,7 @@
                 averageCount: "", // 存储的平均值
                 bucketList: ["123", "321"],
                 fileListData: [],
+                searchFileListData: [], // 搜索到的列表数据
                 options: [12, 32],
                 currentBucket: "liang-img",
                 currentDomain: "",
@@ -142,7 +181,10 @@
                     ak: [{
                         validator: checkAk, trigger: 'blur'
                     }]
-                } // 七牛云的设置
+                }, // 七牛云的设置
+                searchWhat: "", // 搜索的内容
+                isChooseAll: false,
+                selectItem: []
             }
         },
         methods: {
@@ -161,7 +203,6 @@
 
                 Qhelper.getInfo("https://api.qiniu.com/v6/space", opt, function (err, res, data) {
                     let xAxis_data = [], yAxis_data = [], countAll = 0;
-                    console.log("here is data>>>>>>", data);
                     for (let i of data.times) {
                         let t = transformStamp(i * 1000);
                         xAxis_data.push(t.month + "月" + t.day + "日");
@@ -234,6 +275,8 @@
                         i.fsize = helper.byteToKb(i.fsize) + " KB";
                         i.putTime = transformStamp(i.putTime / 10000).format;
                     }
+
+                    this.searchChange(this.searchWhat)
                 })
             },
             // 查找bucket空间域名
@@ -247,7 +290,6 @@
             },
             // 跳到指定的url链接
             getUrl(link) {
-                console.log(link);
                 this.$electron.shell.openExternal(link)
             },
             changeBucket(bucket) {
@@ -265,8 +307,50 @@
             },
             // 刷新列表
             reloadList() {
-                this.fileListData = [];
+                this.searchFileListData = [];
                 this.searchList();
+            },
+            // input框的搜索栏
+            searchChange(val) {
+                let modelListData = Object.assign([], this.fileListData);
+                if (val == "") this.searchFileListData = modelListData;
+                else {
+                    this.searchFileListData = modelListData.filter((item, index, arr) => {
+                        return item["key"].indexOf(val) >= 0
+                    })
+                }
+            },
+            // 删除七牛云的图片
+            deleteImg(name) {
+                showInfo.confirmInfo("确定要删除此项目吗?", "删除提示", "warning", function (flag) {
+                    if (flag) {
+                        let encodeUrl = Qhelper.encodedEntryURI(Qhelper.currentBucket + ":" + name);
+                        Qhelper.getInfoPost("https://rs.qiniu.com/delete/" + encodeUrl, {}, (err, res, data) => {
+                            if (err) showInfo.message(err, "error");
+                            showInfo.message("数据已成功删除^_^", "success");
+                            _this.reloadList();
+                        });
+                    }
+                })
+            },
+            // 选择全部
+            chooseAll() {
+                this.isChooseAll = !this.isChooseAll;
+                if (this.isChooseAll) {
+                    for (let i of this.searchFileListData) {
+                        this.$refs["resourceData"].toggleRowSelection(i);
+                    }
+                } else this.$refs["resourceData"].clearSelection();
+
+            },
+            handleSelectionChange(val) {
+                this.selectItem = val
+            },
+            chooseFile() {
+                this.$electron.remote.dialog.showOpenDialog({ properties: ['openFile'] }, function (data) {
+                    data = data || "";
+                    console.log(data);
+                })
             }
         },
         created: function () {
@@ -357,6 +441,8 @@
     /* 列表操作区域 */
     .list-operate {
       width: 100%;
+      overflow: hidden;
+      padding-bottom: 30px;
       height: auto;
     }
     .pre-title {
@@ -411,5 +497,42 @@
       width: 64px;
       height: 64px;
       opacity: 0.5;
+    }
+
+    /* 列表的一些按钮区域 */
+    .btn-o {
+      float: left;
+    }
+    .input-o {
+      float: right;
+    }
+    .file-show-o {
+      float: left;
+      padding: 0px 20px;
+      color: #606266;
+      text-align: center;
+      line-height: 40px;
+      font-size: 14px;
+      font-family: core_sans_n45_regular, "Avenir Next", "Helvetica Neue", Helvetica,
+        Arial, "PingFang SC", "Source Han Sans SC", "Hiragino Sans GB",
+        "Microsoft YaHei", "WenQuanYi MicroHei", sans-serif;
+    }
+    .file-show-o i {
+      margin-left: 25px;
+    }
+
+    /* 上传区域的展示区域  */
+    .uptoken-o {
+      width: 100%;
+      margin: 0 auto;
+      text-align: center;
+      overflow: hidden;
+    }
+    .uptoken-o > div {
+      width: 50%;
+      min-height: 50px;
+      box-sizing: border-box;
+      border: 1px solid #000;
+      float: left;
     }
 </style>

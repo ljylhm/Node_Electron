@@ -41,6 +41,8 @@ function logStats(proc, data) {
 function startRenderer() {
   return new Promise((resolve, reject) => {
     rendererConfig.entry.renderer = [path.join(__dirname, 'dev-client')].concat(rendererConfig.entry.renderer)
+    console.log(chalk.yellow("初始的配置"), chalk.yellow(rendererConfig.entry.renderer));
+    // compiler 是webpack的编译对象
     const compiler = webpack(rendererConfig)
     hotMiddleware = webpackHotMiddleware(compiler, {
       log: false,
@@ -145,7 +147,7 @@ function electronLog(data, color) {
 }
 
 function greeting() {
-  const cols = process.stdout.columns
+  const cols = process.stdout.columns // 可以理解为输出的列数来确定输出字数的长度
   let text = ''
 
   if (cols > 104) text = 'electron-vue'

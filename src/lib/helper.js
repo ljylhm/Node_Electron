@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-import { electron } from "electron";
+import electron from "electron";
 import { showInfo } from "@showInfo";
 import net from "./net";
 let _router;
@@ -35,7 +35,17 @@ let helper = {
     },
     oneDayTime: 1000 * 60 * 60 * 24,
     currentTime: "",
-    saveJsonPath:path.resolve(__dirname,"../../history/downloadhs.json"),
+    // saveJsonPath: path.resolve(electron.remote.app.getPath('userData'), "./downloadhs.json"),
+    saveJsonPathInit() {
+        console.log("here is saveJsonPath  ", this.saveJsonPath);
+        if (!checking.isExist(this.saveJsonPath)) { // 如果路径存在的话
+            writeInfo.writeInfo(JSON.stringify({}), this.saveJsonPath, (err) => {
+                if (err) showInfo.message("写入文件的时候发生了一点问题", "error");
+                else showInfo.message("创建文件夹成功");
+            })
+        }
+    },
+    saveJsonPath: path.resolve(electron.remote.app.getPath('userData'), "./downloadhs.json"),
     /*
     * @路由跳转 默认通过path来查找 参数通过param的方式来传递
     * query会将参数带在链接里 param则不会
@@ -180,23 +190,23 @@ let helper = {
         window.localStorage.removeItem(name);
     },
 
-    transformDate(data, days = 0){
+    transformDate(data, days = 0) {
         return new Date((new Date(data).getTime() - this.oneDayTime * days)).format("yyyy-MM-dd")
     },
 
     // 对象排序
-    objectSort(obj,flag=true){
-        
+    objectSort(obj, flag = true) {
+
         let _t = Object.keys(obj);
-        
-        _t.sort((a,b)=>{
-            if(flag) return Date.parse(a) - Date.parse(b);
-            return Date.parse(b) - Date.parse(a); 
+
+        _t.sort((a, b) => {
+            if (flag) return Date.parse(a) - Date.parse(b);
+            return Date.parse(b) - Date.parse(a);
         });
 
-        let newO = new Object();  
+        let newO = new Object();
 
-        for(let i of _t){
+        for (let i of _t) {
             newO[i] = obj[i];
         }
         return newO;
@@ -271,7 +281,7 @@ let writeInfo = {
     * @param {String} path
     * @param {Function} cb 回调函数
     */
-    writeInfo: function (data, path,cb) {
+    writeInfo: function (data, path, cb) {
         fs.writeFile(path, data, function (err) {
             if (err) throw err;
             else cb && cb();
