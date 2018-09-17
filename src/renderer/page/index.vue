@@ -26,6 +26,9 @@
             toUrl(path) {
                 helper.routerJump(path)
             }
+        },
+        mounted() {
+            console.log("ssss>>><<<sss>>><<<<sss>", Object.keys({}))
         }
     }
 </script>
@@ -41,8 +44,7 @@
       width: 100%;
       height: 100%;
       min-width: 600px;
-      background: url(//bpic.588ku.com/back_pic/00/11/32/3056380c08c1a75.jpg!r850/fw/1600)
-        no-repeat center center;
+      background: url("../../../static/bg.jpg");
       background-size: cover;
       filter: brightness(50%);
       -webkit-filter: brightness(50%);

@@ -66,8 +66,8 @@
                                 <img src="@static/preview.png" alt="">
                             </i>
                         </el-popover>
-                        <i class="more-i">
-                            <img src="@static/more.png" alt="">
+                        <i class="more-i" @click="deleteImg(props.row.key)">
+                            <img src="@static/delete.png" alt="">
                         </i>
                     </template>
                 </el-table-column>
@@ -247,7 +247,6 @@
             },
             // 跳到指定的url链接
             getUrl(link) {
-                console.log(link);
                 this.$electron.shell.openExternal(link)
             },
             changeBucket(bucket) {
@@ -267,6 +266,19 @@
             reloadList() {
                 this.fileListData = [];
                 this.searchList();
+            },
+            // 删除七牛云的图片
+            deleteImg(name) {
+                showInfo.confirmInfo("确定要删除此项目吗?", "删除提示", "warning", function (flag) {
+                    if (flag) {
+                        let encodeUrl = Qhelper.encodedEntryURI(Qhelper.currentBucket + ":" + name);
+                        Qhelper.getInfoPost("https://rs.qiniu.com/delete/" + encodeUrl, {}, (err, res, data) => {
+                            if (err) showInfo.message(err, "error");
+                            showInfo.message("数据已成功删除^_^", "success");
+                            _this.reloadList();
+                        });
+                    }
+                })
             }
         },
         created: function () {

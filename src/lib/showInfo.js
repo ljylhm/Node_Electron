@@ -36,12 +36,19 @@ let showInfo = {
      * type {success / info / warning / error}
      */
 
-    confirmInfo: function (mes, title = "提示", type, opt) {
+    confirmInfo: function (mes, title = "提示", type, cb, opt = {}) {
+        let fn = (action) => {
+            let i = action == "confirm" ? true : false;
+            cb && cb(i);
+        }
         opt = Object.assign({
+            showCancelButton: true,
             confirmButtonText: '确定',
             cancelButtonText: '取消',
-            type: type || "info"
+            type: type || "info",
+            callback: fn
         }, opt);
+        console.log("opt", opt);
         MessageBox.confirm(mes, title, opt, type);
     },
 
@@ -74,7 +81,7 @@ let showInfo = {
             duration: 3000
         }, opt))
     },
-    
+
     NotifiClose(NotifiInstance) {
         NotifiInstance.close();
     }

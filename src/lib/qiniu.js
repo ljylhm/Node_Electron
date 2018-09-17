@@ -13,6 +13,7 @@ let Qhelper = {
         accessKey: "kmfsyyVNEuUPI-1C6ImRhEw8MxYYWJoIMyjTK9W5",
         secretKey: "li7XydI7IZH19W1_4inYa32qikWtY2sekhDwOJ50"
     },
+    currentBucket: "liang-img",
     setMac(ak, sk) {
         this.mac.accessKey = ak;
         this.mac.secretKey = sk;
@@ -30,6 +31,13 @@ let Qhelper = {
             }
         }
     },
+    // 转码地址
+    encodedEntryURI(url) {
+        for (let i in qiniu.util) {
+            console.log(i);
+        }
+        return qiniu.util.urlsafeBase64Encode(url);
+    },
     // body只有在content-type为application/x-www-form-urlencoded的时候才会使用
     createAccessToken(url, body) {
         return qiniu.util.generateAccessToken(this.mac, url, body)
@@ -41,6 +49,12 @@ let Qhelper = {
             opt = this.defaultHeaders(accessToken);
         net.get(url, data, cb, opt);
     },
+    getInfoPost(url, data, cb, body) {
+        url = this.getTransformUrl(url, data);
+        let accessToken = this.createAccessToken(url, body),
+            opt = this.defaultHeaders(accessToken);
+        net.post(url, data, cb, opt);
+    }
     // // 获得bucket下的域名集合
     // getBucketDomain(url, data, cb, body) {
     //     let accessToken = this.createAccessToken(url, body),

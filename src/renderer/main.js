@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 import ElementUI from 'element-ui'
-import { helper,readInfo,writeInfo } from "@helper";
+import { helper, readInfo, writeInfo } from "@helper";
 import './components/ref';
 import { showInfo } from "@showInfo"
 import { ipcRenderer } from "electron";
@@ -18,6 +18,7 @@ if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 Vue.use(ElementUI);
+helper.saveJsonPathInit();
 helper.init(router); // 初始化router对象
 
 ipcRenderer.on("close-window", (event, input, output) => {
@@ -26,7 +27,7 @@ ipcRenderer.on("close-window", (event, input, output) => {
 
 // 开始下载的回调事件
 ipcRenderer.on("begin-download", (event, input, output) => {
-  showInfo.showNotifi("下载","添加一个下载事件");
+  showInfo.showNotifi("下载", "添加一个下载事件");
 })
 
 // 接收字节的回调事件
@@ -39,33 +40,33 @@ ipcRenderer.on("success-download", (event, input, output) => {
   readInfo.getFileInfo(helper.saveJsonPath, (files) => {
     input = input.split(",");
     let o = JSON.parse(files.toString());
-    let om = new Object(); 
-    
+    let om = new Object();
+
     helper.getTime((err, res, data) => {
-        let _time = data.data.t;
+      let _time = data.data.t;
 
-        let today_format = helper.transformDate(parseInt(_time)); 
-        
-        om.date = _time;
-        om.name = input[0];
-        om.sourceUrl = input[1];
-        om.url = input[2];
-        if(o[today_format]) o[today_format].unshift(om);
-        else {
-           o[today_format] = [om]
-        }
-        
+      let today_format = helper.transformDate(parseInt(_time));
 
-        // o = helper.objectSort(o,()=>{
+      om.date = _time;
+      om.name = input[0];
+      om.sourceUrl = input[1];
+      om.url = input[2];
+      if (o[today_format]) o[today_format].unshift(om);
+      else {
+        o[today_format] = [om]
+      }
 
-        // });
-      
-        writeInfo.writeInfo(JSON.stringify(o),helper.saveJsonPath,()=>{
-          showInfo.showNotifi("下载","下载成功");
-        });
+
+      // o = helper.objectSort(o,()=>{
+
+      // });
+
+      writeInfo.writeInfo(JSON.stringify(o), helper.saveJsonPath, () => {
+        showInfo.showNotifi("下载", "下载成功");
+      });
 
     })
-});
+  });
   // writeInfo.writeInfo(helper.saveJsonPath)
 })
 
@@ -80,7 +81,7 @@ if (lastPath) {
   setTimeout(helper.routerJump(lastPath), 500);
 } else helper.routerJump('index');
 
-console.log("getStore",store);
+console.log("getStore", store);
 
 /* eslint-disable no-new */
 new Vue({
