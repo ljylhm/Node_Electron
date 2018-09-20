@@ -2,7 +2,7 @@
     <div class="page">
         <div class="page-o"></div>
         <div class="guide-o l-center">
-            <div class="guide-i-o" @click="toUrl('gzip-img')">
+            <div class="guide-i-o" @click="toUrl('gzipImg')">
                 <div class="guide-comm guide-1"></div>
                 <div class="guide-name">压缩图片</div>
             </div>
@@ -26,9 +26,6 @@
             toUrl(path) {
                 helper.routerJump(path)
             }
-        },
-        mounted() {
-            console.log("ssss>>><<<sss>>><<<<sss>", Object.keys({}))
         }
     }
 </script>

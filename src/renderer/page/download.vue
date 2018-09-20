@@ -41,6 +41,9 @@
             };
         },
         methods: {
+            toUrl(path) {
+                helper.routerJump(path);
+            },
             judgeTime(date) { // 判断是否是今天和昨天
                 if (date == this.currentTime) return "今天";
                 if (date == this.lastTime) return "昨天";
@@ -73,7 +76,6 @@
                     let o = JSON.parse(files.toString());
                     if (Object.keys(o).length <= 0) this.hasContent = false;
                     this.list = helper.objectSort(o, false);
-                    console.log("list", this.list);
                 });
             })
             this.$store.dispatch("clearLoadNum");
@@ -82,15 +84,17 @@
         computed: {
             lastTime: function () {
                 return helper.transformDate(this.nowStamp - helper.oneDayTime);
-            },
-            // hasContent: function () {
-            //     return Object.keys(this.list).length > 0
-            // }
+            }
         }
     }
 
 </script>
 <style scoped>
+    .test {
+      width: 100%;
+      height: 100px;
+      border: 1px solid #000;
+    }
     .page-download {
       width: 100%;
       height: auto;

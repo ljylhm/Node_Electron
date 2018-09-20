@@ -1,25 +1,15 @@
-# gzipimg
+# husky
 
 > electron png jpg gif
 
-#### Build Setup
+#### 前言
+ 最近在捣鼓electron，因为使用vue已经有一段时间了，所以使用了vue-electron来当做我的主要框架。（应该不能算框架，可以算个库吧，集合webpack把我们吧开发环境搭建好，后期的打包也做了封装，总的来说用起来感觉很不错）。
 
-``` bash
-# install dependencies
-npm install
+ #### 结构图
+ ![Image text](https://p3s00of2j.bkt.clouddn.com/%E7%BB%93%E6%9E%84%E7%9B%AE%E5%BD%95%E5%9B%BE.png)
 
-# serve with hot reload at localhost:9080
-npm run dev
-
-# build electron application for production
-npm run build
-
-# run unit & end-to-end tests
-npm test
+ #### 路由结构图
+ ![Image text](https://file.40017.cn/huochepiao/activity/20180920test/路由分析图.png)
 
 
-```
-
----
-
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[4c6ee7b](https://github.com/SimulatedGREG/electron-vue/tree/4c6ee7bf4f9b4aa647a22ec1c1ca29c2e59c3645) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
+ 

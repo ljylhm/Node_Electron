@@ -1,11 +1,11 @@
 <template>
     <div class="page-slide">
         <el-menu default-active="1" class="el-menu-vertical-demo" background-color="#252a2f" text-color="#fff" active-text-color="#ffd04b">
-            <el-menu-item index="1">
+            <el-menu-item index="1" @click="toUrl('/gzipImg/gzipImgMain')">
                 <i class="el-icon-document"></i>
                 <span slot="title">TinyPng</span>
             </el-menu-item>
-            <el-menu-item index="2">
+            <el-menu-item index="2" @click="toUrl('/gzipImg/gzipImgHistory')">
                 <i class="el-icon-menu"></i>
                 <span slot="title">历史记录</span>
             </el-menu-item>
@@ -14,12 +14,19 @@
 </template>
 
 <script>
+    import { helper } from "@helper";
     export default {
         data: function () {
             return {
                 mes: "welcome to showDialog.vue"
             }
         },
+        methods: {
+            toUrl(path) {
+                console.log("xxx", path);
+                setTimeout(helper.routerJump(path), 1000)
+            }
+        }
     }
 </script>
 

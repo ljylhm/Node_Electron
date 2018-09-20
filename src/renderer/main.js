@@ -73,15 +73,13 @@ ipcRenderer.on("success-download", (event, input, output) => {
 let lastPath = helper.localStorageGet('lastPath');
 
 router.beforeEach((to, from, next) => {
-  helper.localStorageSet('lastPath', to.name);
+  helper.localStorageSet('lastPath', to.path);
   next();
 })
 
 if (lastPath) {
   setTimeout(helper.routerJump(lastPath), 500);
 } else helper.routerJump('index');
-
-console.log("getStore", store);
 
 /* eslint-disable no-new */
 new Vue({

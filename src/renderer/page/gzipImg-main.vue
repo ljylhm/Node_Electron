@@ -1,12 +1,60 @@
 <template>
     <div class="page">
-        <div class="slide-o">
-            <slide-page>
-                <template slot="pageData"></template>
-            </slide-page>
+        <div class="drag-input" v-dragable>
+            <div class="no-file">
+                <i class="add-file l-center" @click="openFile">
+                    <input type="file" @change="changeFile" alt="" multiple="multiple" ref="fileButton">
+                    <img src="@static/add.png" alt="" class="l-center">
+                </i>
+            </div>
         </div>
-        <div class="cont-o">
-            <router-view></router-view>
+
+        <div class="show-data">
+            <div class="has-file">
+                <el-table :data="fileData" border tooltip-effect="dark" ref="multipleTable" style="width: 100%" @row-dblclick="chooseRow" @selection-change="changeSelection" max-height="600" class="re-el-table">
+                    <el-table-column type="selection" width="55">
+                    </el-table-column>
+                    <el-table-column label="排序" type="index" width="50">
+                    </el-table-column>
+                    <el-table-column prop="name" label="文件名" width="300">
+                    </el-table-column>
+                    <!-- <el-table-column width="100" label="预览图">
+                        <template scope="props">
+                            <img :src="props.row.transformPath" alt="" class="pre-view" v-if="checkIsImg(props.row.type)">
+                            <span v-else>无预览图</span>
+                        </template>
+                    </el-table-column> -->
+                    <el-table-column prop="path" label="文件位置" width="500">
+                    </el-table-column>
+                    <el-table-column label="是否文件夹" width="100">
+                        <template scope="props">
+                            {{props.row.isDir? "是":"否"}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="type" label="文件类型" width="100">
+                    </el-table-column>
+                    <el-table-column prop="size" label="文件大小/bit" width="200">
+                    </el-table-column>
+                    <el-table-column fixed="right" prop="set" label="操作" width="150">
+                        <template scope="props">
+                            <el-button type="text" size="small" @click="chooseRow(props.row)">查看</el-button>
+                            <el-button type="text" size="small" @click="base64(props.row)">base64</el-button>
+                            <el-button type="text" size="small" @click="removeItem(props.$index)">移除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+
+            <!-- 对表格操作的区域 -->
+            <div class="operating" v-show="isOperate">
+                <el-button type="primary" @click="gzipAll('multipleTable','fileData')">全部压缩</el-button>
+                <el-button type="primary" @click="gzipSelected">选中压缩</el-button>
+                <el-button type="primary" @click="removeAll">全部移除</el-button>
+            </div>
+        </div>
+
+        <div class="show-gzip-result" v-if="gzipData.length>0 && fileData.length>0">
+            <show-result :resultData="gzipData"></show-result>
         </div>
 
         <!-- 弹窗区域  -->

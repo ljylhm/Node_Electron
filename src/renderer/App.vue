@@ -1,19 +1,19 @@
 <template>
   <div id="app">
     <div class="nav">
-      <div class="nav-i nav-icon" @click="toUrl('index')">
+      <div class="nav-i nav-icon" @click="toUrl('/index')">
         <i>
           <img src="@static/icon.png" alt="">
         </i>
       </div>
       <div class="nav-o l-x-center">
-        <div class="nav-i" @click="toUrl('gzip-img')">
+        <div class="nav-i" @click="toUrl('/gzipImg/gzipImgMain')">
           <i>
             <img src="@static/gzip.png" alt="">
           </i>
           压缩图片
         </div>
-        <div class="nav-i" @click="toUrl('upLoad')">
+        <div class="nav-i" @click="toUrl('/upLoad')">
           <i>
             <img src="@static/upload.png" alt="">
           </i>

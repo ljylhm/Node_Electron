@@ -3,7 +3,6 @@ const path = require('path');
 import electron from "electron";
 import { showInfo } from "@showInfo";
 import net from "./net";
-let _router;
 
 (function (D) {
     D.prototype.format = function (format) {
@@ -24,20 +23,31 @@ let _router;
                     ("00" + o[k]).substr(("" + o[k]).length));
         return format;
     }
-})(Date)
+})(Date);
+(function (S) {
+    S.prototype.trim = function () {
+        return this.replace(/^\s+|\s+$/g, '');
+    };
+    S.prototype.getFirstLetter = function () {
+        return this.trim().substring(0, 1);
+    }
+    S.prototype.upperOneLetter = function () {
+        return this.trim().charAt(0).toUpperCase() + this.trim().substring(1);
+    }
+})(String)
 
 let helper = {
     /*
    * @初始化路由
    */
     init: function (router) {
-        _router = router
+        this._router = router
     },
+    _router: "",
     oneDayTime: 1000 * 60 * 60 * 24,
     currentTime: "",
     // saveJsonPath: path.resolve(electron.remote.app.getPath('userData'), "./downloadhs.json"),
     saveJsonPathInit() {
-        console.log("here is saveJsonPath  ", this.saveJsonPath);
         if (!checking.isExist(this.saveJsonPath)) { // 如果路径存在的话
             writeInfo.writeInfo(JSON.stringify({}), this.saveJsonPath, (err) => {
                 if (err) showInfo.message("写入文件的时候发生了一点问题", "error");
@@ -53,25 +63,23 @@ let helper = {
     * @args 携带的参数
     * @mode 正常模式 或 replace模式
     */
-    routerJump: function (url, args, mode) {
-        if (!_router || !url) return;
+    routerJump: function (url, args = "", mode = true) {
+        if (!this._router || !url) return;
 
-        args = args || "";
-        mode = mode || true;
-        let para = { name: url, params: args };
+        let para = { path: url, query: args };
 
-        if (mode) _router.push(para);
-        else _router.replace(para);
+        if (mode) this._router.push(para);
+        else this._router.replace(para);
     },
     routerReplace: function (url, args) {
         this.routerJump(url, args, false);
     },
     routerGo: function (num) {
-        if (!_router) return;
-        _router.go(num);
+        if (!this._router) return;
+        this._router.go(num);
     },
     routerDataGet: function () {
-        return _router.currentRoute.params || {};
+        return this._router.currentRoute.query || {};
     },
     downLoadUrl(url, filename) { // 下载链接
         var eleLink = document.createElement('a');
