@@ -7,7 +7,4 @@
  #### 结构图
  ![Image text](https://p3s00of2j.bkt.clouddn.com/%E7%BB%93%E6%9E%84%E7%9B%AE%E5%BD%95%E5%9B%BE.png)
  #### 路由结构图
- ![Image text](https://file.40017.cn/huochepiao/activity/20180920test/路由分析图.png)
- 
-
  ![Image text](https://file.40017.cn/huochepiao/activity/20180918test/结构目录图.png?180918190849)
