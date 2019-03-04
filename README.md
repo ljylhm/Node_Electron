@@ -10,11 +10,11 @@
   路由结构花了蛮长时间弄的，主要是想把导入路由变得简单，现在我们使用的方法无论怎样都是要去route.js里面导入相对应的vue;在webpack环境中利用require.context来遍历布局的vue文件夹，并通过定义的规则和使用递归来处理层级路由的关系。
  ![Image text](https://file.40017.cn/huochepiao/activity/20180920test/路由分析图.png)
 #### 预览图片
-  首页展示
+  首页展示</br>
  ![Image text](http://file.40017.cn/huochepiao/activity/MyPic/index.png)
-  压缩图片
+  压缩图片</br>
  ![Image text](http://file.40017.cn/huochepiao/activity/MyPic/gzip.png)
-  获得七牛云
+  获得七牛云</br>
  ![Image text](http://file.40017.cn/huochepiao/activity/MyPic/load.png) 
-  下载列表
+  下载列表</br>
  ![Image text](http://file.40017.cn/huochepiao/activity/MyPic/picupload.png) 
