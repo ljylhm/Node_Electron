@@ -12,7 +12,8 @@
 #### 预览图片
   首页展示</br>
  ![Image text](http://file.40017.cn/huochepiao/activity/MyPic/index.png)
-  压缩图片</br>
+  压缩图片
+  
  ![Image text](http://file.40017.cn/huochepiao/activity/MyPic/gzip.png)
   获得七牛云</br>
  ![Image text](http://file.40017.cn/huochepiao/activity/MyPic/load.png) 
