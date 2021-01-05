@@ -54,7 +54,7 @@
     }
   },
   "dependencies": {
-    "axios": "^0.16.1",
+    "axios": "^0.21.1",
     "echarts": "^4.1.0",
     "element-ui": "^2.4.6",
     "images": "^3.0.1",
